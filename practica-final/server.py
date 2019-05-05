@@ -30,7 +30,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         resultados_obtenidos = info_buena['results']
         return resultados_obtenidos
 
-    def imprime_info_pedida (self, lista):#metodo que crea una pagina en la que aparece el recurso solicitado(cuando clickeas en el formulario se utiliza este
+    def imprime_info_pedida (self, lista):#metodo que crea una pagina en la que aparece el recurso solicitado(cuando clickeas en el formulario)
 
         lista_pedida = """
                                 <html>
@@ -58,13 +58,13 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             parameters = ""
 
         if parameters:
-            limite_parameters = parameters.split("=") #De esta forma, nos quedamos con el valor del limit.
+            limite_parameters = parameters.split("=") #Nos quedamos con el valor del limit.
             try:
                 if limite_parameters[0] == "limit": #limit esta en la posicion 0.
                     limit = int(limite_parameters[1])
-                    if limit > 100:                  #si  es mayor que 100, el limite será 1.
+                    if limit > 100:                  #si  es mayor que 100, el limite sera 1.
                         limit = 1
-            except ValueError: #Si te pasas del limite, el numero que tomara el programa sera el 1.
+            except ValueError: #Si te pasas del limite, el numero que toma el programa sera el 1.
                 limit = 1
 
         if self.path =='/':
@@ -85,7 +85,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 if ('generic_name' in result['openfda']):
                     list_drugs.append (result['openfda']['generic_name'][0])
                 else:
-                    list_drugs.append('Nombre del medicamento desconocido.')
+                    list_drugs.append('El nombre del medicamento desconocido.')
             html_info = self.imprime_info_pedida (list_drugs) #llamamos al metodo info_pedida para realizar la pagina web.
             self.wfile.write(bytes(html_info, "utf8"))
 
@@ -100,7 +100,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 if ('manufacturer_name' in result['openfda']):
                     list_companies.append (result['openfda']['manufacturer_name'][0])
                 else:
-                    list_companies.append('El nombre de la fábrica de medicamentos es desconocido')
+                    list_companies.append('El nombre de la fabrica de medicamentos es desconocido')
             final_html = self.imprime_info_pedida(list_companies)
             self.wfile.write(bytes(final_html, "utf8"))
 
@@ -115,7 +115,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 if ('warnings' in result):
                     list_warnings.append (result['warnings'][0])
                 else:
-                    list_warnings.append('El "WARNING" es desconocido.')
+                    list_warnings.append('La adevertencia es desconocida.')
             final_html = self.imprime_info_pedida(list_warnings)
             self.wfile.write(bytes(final_html, "utf8"))
 
@@ -166,9 +166,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     if ('manufacturer_name' in result['openfda']):
                         list_companies.append(result['openfda']['manufacturer_name'][0])
                     else:
-                        list_companies.append('El nombre de la fábrica de medicamentos que ha introducido es desconocido.')
+                        list_companies.append('El nombre de la fabrica de medicamentos que ha introducido es desconocido.')
             except KeyError:
-                list_companies.append('El nombre de compania incorrecto, por favor vuelva a la pagina de inicio e introduzca un nombre correcto.')
+                list_companies.append('El nombre de fabrica de medicamentos incorrecto, por favor vuelva a la pagina de inicio e introduzca un nombre correcto.')
             final_html = self.imprime_info_pedida(list_companies)
             self.wfile.write(bytes(final_html, "utf8"))
 
@@ -178,12 +178,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
 
 
-        elif 'redirect' in self.path: #Al introducir esta palbra vuelves a la pagina principal.
+        elif 'redirect' in self.path: #Al introducir esta palabra vuelves a la pagina principal.
             self.send_response(302)
             self.send_header('Location', 'http://localhost:'+str(puerto))
             self.end_headers()
 
-        else: # Si el recurso solicitado no se encuentra en el servidor, recibiremos un mensaje de error 404.
+        else: # Si el recurso solicitado no se encuentra, recibiremos un error 404.
             self.send_error(404)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
@@ -195,13 +195,11 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 socketserver.TCPServer.allow_reuse_address= True
 
 
-clase_manejadora = testHTTPRequestHandler #Establecemos como manejador nuestra propia clase, llamada Handler (objeto).
+clase_manejadora = testHTTPRequestHandler #Establecemos como manejador nuestra propia clase, llamada clase manejadora (objeto).
 
-nuestro_servidor = socketserver.TCPServer(("", puerto), clase_manejadora)# Configuramos el socket del servidor, esperando conexiones
-# de clientes.
+nuestro_servidor = socketserver.TCPServer(("", puerto), clase_manejadora)# Configuramos el socket del servidor, esperando conexiones de clientes.
 print("El servidor está abierto a conexiones en el puerto", puerto)
-# Entramos en el bucle principal, atendiendo las peticiones desde nuestro manejador (cada vez que ocurra un 'GET'
-# se invocará nuestro método do_GET)
+# Entramos en el bucle, respondiendo las peticiones desde nuestro manejador (cada vez que ocurra un 'GET' se llamará al do_GET)
 try:
     nuestro_servidor.serve_forever()
 
